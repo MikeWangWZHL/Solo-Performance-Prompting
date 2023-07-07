@@ -16,13 +16,13 @@ def log_retry_error(retry_state):
     logging.error(f"Retrying due to error: {retry_state.outcome.exception()}")  
 
 DEFAULT_CONFIG = {
-    "engine": "mtutor-openai-dev",
+    "engine": "devgpt4-32k",
     "temperature": 0.0,
-    "max_tokens": 3900,
+    "max_tokens": 5000,
     "top_p": 1.0,
     "frequency_penalty": 0.0,
     "presence_penalty": 0.0,
-    "stop": None,
+    "stop": None
 }
 
 class OpenAIWrapper:
