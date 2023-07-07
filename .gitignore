@@ -1,0 +1,8 @@
+*.zip
+*.tar
+*.tar.gz
+*.rar
+datasets/
+openai_key*
+api_key*
+*.log
