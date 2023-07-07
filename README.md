@@ -16,7 +16,7 @@ We provide running scripts for each of the three tasks, please check out the com
 - Logic Grid Puzzle: `bash scripts/logic_grid_puzzle.sh`
 
 ## Prompts
-All prompts for each task can be found in `prompts/` folder. 
+All prompts can be found in the `prompts/` folder. 
 
 ## Paper Experiment Results
 Experimental results in the paper for each task can be found in the `logs/` folder. Each task has two subdirs `w_sys_mes` and `wo_sys_mes` indicating the two inference settings: with and without the system message: "You are an AI assistant that helps people find information.".

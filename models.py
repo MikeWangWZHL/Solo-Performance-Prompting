@@ -110,4 +110,6 @@ class OpenAIWrapper:
             cost = self.completion_tokens / 1000 * 0.12 + self.prompt_tokens / 1000 * 0.06
         elif engine == "mtutor-openai-dev":
             cost = self.completion_tokens / 1000 * 0.002 + self.prompt_tokens / 1000 * 0.0015
+        else:
+            cost = 0 # TODO: add custom cost calculation for other engines
         return {"completion_tokens": self.completion_tokens, "prompt_tokens": self.prompt_tokens, "cost": cost}
