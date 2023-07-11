@@ -1,6 +1,6 @@
 MODEL="gpt4-32k" # ['gpt3.5-4k','gpt4-32k','gpt4-8k']
 
-DATA_FILE="codenames_85.jsonl"
+DATA_FILE="codenames_50.jsonl"
 
 START_IDX=0
 END_IDX=50

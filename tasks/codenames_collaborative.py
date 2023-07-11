@@ -16,7 +16,7 @@ from prompts.codenames_collaborative import (
 import json
 
 class CodenamesCollaborativeTask(Task):
-    def __init__(self, file='codenames_85.jsonl'):
+    def __init__(self, file='codenames_50.jsonl'):
         super().__init__()
         path = os.path.join(DATA_PATH, 'codenames_collaborative', file)
         with open(path, "r") as f:
