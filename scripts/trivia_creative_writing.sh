@@ -1,5 +1,5 @@
 
-MODEL="gpt4-32k" # ['gpt3.5-4k','gpt4-32k','gpt4-8k']
+MODEL="gpt4-32k" # your engine name
 
 DATA_FILE="trivia_creative_writing_100_n_5.jsonl" # ['trivia_creative_writing_100_n_5.jsonl', 'trivia_creative_writing_100_n_10.jsonl']
 

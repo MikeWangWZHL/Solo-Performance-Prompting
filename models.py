@@ -26,22 +26,15 @@ DEFAULT_CONFIG = {
 }
 
 class OpenAIWrapper:
-    """
-        engines: 
-        - "mtutor-openai-dev": gpt-35-turbo
-        - "devgpt4": gpt4
-        - "devgpt4-32k": gpt4 with context window 32k
-    """
     def __init__(self, config = DEFAULT_CONFIG, system_message=""):
         # TODO: set up your API key with the environment variable OPENAIKEY
         openai.api_key = os.environ.get("OPENAI_API_KEY")      
 
-        # TODO: set up your own API deployment here:
-        # below is the default deployment for our experiments; 
-        # comment out the following lines if you want to use the default deployment
-        openai.api_type = "azure"
-        openai.api_base = "https://mtutor-dev.openai.azure.com/"
-        openai.api_version = "2023-03-15-preview"
+        if os.environ.get("USE_AZURE")=="True":
+            print("using azure api")
+            openai.api_type = "azure"
+        openai.api_base = os.environ.get("API_BASE")
+        openai.api_version = os.environ.get("API_VERSION")
 
         self.config = config
         print("api config:", config, '\n')
@@ -104,12 +97,8 @@ class OpenAIWrapper:
 
     def compute_gpt_usage(self):
         engine = self.config["engine"]
-        if engine == "devgpt4":
-            cost = self.completion_tokens / 1000 * 0.06 + self.prompt_tokens / 1000 * 0.03
-        elif engine == "devgpt4-32k":
+        if engine == "devgpt4-32k":
             cost = self.completion_tokens / 1000 * 0.12 + self.prompt_tokens / 1000 * 0.06
-        elif engine == "mtutor-openai-dev":
-            cost = self.completion_tokens / 1000 * 0.002 + self.prompt_tokens / 1000 * 0.0015
         else:
             cost = 0 # TODO: add custom cost calculation for other engines
         return {"completion_tokens": self.completion_tokens, "prompt_tokens": self.prompt_tokens, "cost": cost}

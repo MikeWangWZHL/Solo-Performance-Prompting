@@ -1,13 +1,13 @@
-# Repo for paper [Solo Performance Prompting]()
+# Official Repo of paper [Solo Performance Prompting (SPP)]()
+
+![Illustration of Solo Performance Prompting](asset/teaser_figure_horizontal_png.png) 
 
 ## Setup
 - Install dependencies
     ```
     pip install -r requirements.txt
     ```
-- Set up OpenAI API key and store in environment variable `OPENAI_API_KEY`
-- Config OpenAI API deployment following Line 39-44 in `model.py`
-- Config model/engine by adding an entry in `gpt_config` (line 139-168) in `run.py`
+- Set up OpenAI API configs in `config_template.sh` and run `source config_template.sh` to set up the env variables (Note that we are using the Azure API in our experiments)
 
 ## Quick Start
 We provide running scripts for each of the three tasks, please check out the comments in the ".sh" scripts for more information: 
@@ -17,6 +17,9 @@ We provide running scripts for each of the three tasks, please check out the com
 
 ## Prompts
 All prompts can be found in the `prompts/` folder. 
+
+## Datasets
+All datasets can be found in the `data/` folder.
 
 ## Paper Experiment Results
 Experimental results in the paper for each task can be found in the `logs/` folder. Each task has two subdirs `w_sys_mes` and `wo_sys_mes` indicating the two inference settings: with and without the system message: "You are an AI assistant that helps people find information.".

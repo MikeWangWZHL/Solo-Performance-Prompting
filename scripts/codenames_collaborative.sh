@@ -1,4 +1,4 @@
-MODEL="gpt4-32k" # ['gpt3.5-4k','gpt4-32k','gpt4-8k']
+MODEL="gpt4-32k" # your engine name
 
 DATA_FILE="codenames_50.jsonl"
 

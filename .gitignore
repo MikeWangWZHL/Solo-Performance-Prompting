@@ -6,3 +6,4 @@ datasets/
 openai_key*
 api_key*
 *.log
+config_ours.sh

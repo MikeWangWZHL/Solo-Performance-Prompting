@@ -5,13 +5,6 @@ from models import OpenAIWrapper
 from tasks import get_task
 import time
 
-"""
-    engines: 
-    - "mtutor-openai-dev": gpt-35-turbo
-    - "devgpt4": gpt4
-    - "devgpt4-32k": gpt4 with context window 32k
-"""
-
 
 SLEEP_RATE = 30 # sleep between calls
 
@@ -135,18 +128,9 @@ def run(args):
         time.sleep(SLEEP_RATE)
 
 
-# TODO: add your model config here:
-# name: {model config}
+
+# TODO: add your custom model config here:
 gpt_configs = {
-    "gpt4-8k": {
-        "engine": "devgpt4",
-        "temperature": 0.0,
-        "max_tokens": 5000,
-        "top_p": 1.0,
-        "frequency_penalty": 0.0,
-        "presence_penalty": 0.0,
-        "stop": None
-    },
     "gpt4-32k": {
         "engine": "devgpt4-32k",
         "temperature": 0.0,
@@ -155,18 +139,18 @@ gpt_configs = {
         "frequency_penalty": 0.0,
         "presence_penalty": 0.0,
         "stop": None
-    },
-    "gpt3.5-4k": {
-        "engine": "mtutor-openai-dev",
-        "temperature": 0.0,
-        "max_tokens": 3900,
-        "top_p": 1.0,
-        "frequency_penalty": 0.0,
-        "presence_penalty": 0.0,
-        "stop": None
     }
 }
 
+default_gpt_config = {
+    "engine": None,
+    "temperature": 0.0,
+    "max_tokens": 5000,
+    "top_p": 1.0,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "stop": None
+}
 
 def parse_args():
     model_choices = list(gpt_configs.keys())
@@ -188,9 +172,17 @@ def parse_args():
 
 if __name__ == '__main__':
     args = vars(parse_args())
-    args['gpt_config'] = gpt_configs[args['model']]
+    model_name = args['model']
+    
+    if model_name in gpt_configs:
+        args['gpt_config'] = gpt_configs[model_name] # our configs
+    else:
+        args['gpt_config'] = default_gpt_config
+        args['gpt_config']['engine'] = model_name
+    
     # overwrite temperature and top_p
     args['gpt_config']['temperature'] = args['temperature']
     args['gpt_config']['top_p'] = args['top_p']
     print("run args:", args)
+    
     run(args)
