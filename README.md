@@ -1,4 +1,4 @@
-# Official Repo of paper [Solo Performance Prompting (SPP)]()
+# Official Repo of paper [Solo Performance Prompting (SPP)](https://arxiv.org/abs/2307.05300)
 
 ![Illustration of Solo Performance Prompting](asset/teaser_figure_horizontal_png.png) 
 
