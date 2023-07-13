@@ -38,6 +38,14 @@ Experimental results in the paper for each task can be found in the `logs/` fold
 ## Citations
 Please cite the paper and star this repo if you find this work interesting/helpful.
 ```
+@misc{wang2023unleashing,
+      title={Unleashing Cognitive Synergy in Large Language Models: A Task-Solving Agent through Multi-Persona Self-Collaboration}, 
+      author={Zhenhailong Wang and Shaoguang Mao and Wenshan Wu and Tao Ge and Furu Wei and Heng Ji},
+      year={2023},
+      eprint={2307.05300},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI}
+}
 ```
 
 ## Acknowledgements
