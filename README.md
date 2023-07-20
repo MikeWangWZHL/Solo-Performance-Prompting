@@ -1,4 +1,4 @@
-# Official Repo of paper [Solo Performance Prompting (SPP)]()
+# Official Repo of paper [Solo Performance Prompting (SPP)](https://arxiv.org/abs/2307.05300)
 
 ![Illustration of Solo Performance Prompting](asset/teaser_figure_horizontal_png.png) 
 
@@ -38,6 +38,12 @@ Experimental results in the paper for each task can be found in the `logs/` fold
 ## Citations
 Please cite the paper and star this repo if you find this work interesting/helpful.
 ```
+@article{wang2023unleashing,
+  title={Unleashing Cognitive Synergy in Large Language Models: A Task-Solving Agent through Multi-Persona Self-Collaboration},
+  author={Wang, Zhenhailong and Mao, Shaoguang and Wu, Wenshan and Ge, Tao and Wei, Furu and Ji, Heng},
+  journal={arXiv preprint arXiv:2307.05300},
+  year={2023}
+}
 ```
 
 ## Acknowledgements

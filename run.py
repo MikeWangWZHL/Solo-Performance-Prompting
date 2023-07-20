@@ -163,8 +163,8 @@ def parse_args():
     args.add_argument('--task_end_index', type=int, required=True)
     args.add_argument('--num_generation', type=int, default=1)
     args.add_argument('--additional_output_note', type=str, default="")
-    args.add_argument('--temperature', type=int, default=0.0)
-    args.add_argument('--top_p', type=int, default=1.0)
+    args.add_argument('--temperature', type=float, default=0.0)
+    args.add_argument('--top_p', type=float, default=1.0)
     args.add_argument('--system_message', type=str, default="")
     
     args = args.parse_args()
