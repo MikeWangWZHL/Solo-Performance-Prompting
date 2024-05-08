@@ -1,7 +1,7 @@
 import os
 import re
 from tasks.base import Task, DATA_PATH
-from prompts.trivia_creative_writing import standard_prompt, cot_prompt, spp_prompt, spp_prompt_profile, spp_prompt_fixed_persona
+from prompts.trivia_creative_writing import *
 import json
 # from models import gpt
 
@@ -31,10 +31,20 @@ class TriviaCreativeWritingTask(Task):
             input_prompt = cot_prompt.format(n=n, questions=questions_str, topic=topic)
         elif method == "spp":
             input_prompt = spp_prompt.format(n=n, questions=questions_str, topic=topic)
+        elif method == "spp_less_demo":
+            input_prompt = spp_prompt_less_demo.format(n=n, questions=questions_str, topic=topic)
         elif method == "spp_fixed_persona":
             input_prompt = spp_prompt_fixed_persona.format(n=n, questions=questions_str, topic=topic)
         elif method == "spp_profile":
             input_prompt = spp_prompt_profile.format(n=n, questions=questions_str, topic=topic)
+        elif method == "self_refine":
+            phase = kwargs["phase"]
+            if phase == "init":
+                input_prompt = standard_prompt.format(n=n, questions=questions_str, topic=topic)
+            elif phase == "feedback":
+                input_prompt = self_refine_feedback_prompt.format(question_answer=kwargs["question_answer"])
+            elif phase == "refine":
+                input_prompt = self_refine_refinement_prompt.format(question_answer=kwargs["question_answer"], feedback=kwargs["feedback"])
         else:
             raise NotImplementedError(f"method {method} not implemented")
         
@@ -55,14 +65,14 @@ class TriviaCreativeWritingTask(Task):
         return info
 
     @staticmethod
-    def prompt_unwrap(response: str, method: str):
+    def prompt_unwrap(response: str, method: str, **kwargs):
         '''
             response: raw genration from the model
             return:
                 - str: the story
                 - bool: whether the story is successfully parsed from the raw genration
         '''
-        if method == "standard":
+        if method in ["standard", "self_refine"]:
             return response, True
         
         elif method == "cot":
@@ -73,13 +83,13 @@ class TriviaCreativeWritingTask(Task):
             else:
                 return response, False
         
-        elif method in ["spp","spp_profile","spp_fixed_persona"]:
+        elif method in ["spp","spp_profile","spp_fixed_persona", "spp_less_demo"]:
             if "Final answer:" in response:
                 return response.split("Final answer:")[1].strip(), True
             elif "final answer:" in response:
                 return response.split("final answer:")[1].strip(), True
             else:
-                return response, False
-        
+                return response, False            
+
         else:
             raise NotImplementedError(f"method {method} not implemented")

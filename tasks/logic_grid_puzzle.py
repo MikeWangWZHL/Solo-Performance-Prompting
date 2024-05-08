@@ -1,7 +1,7 @@
 import os
 import re
 from tasks.base import Task, DATA_PATH
-from prompts.logic_grid_puzzle import standard_prompt, cot_prompt, spp_prompt, spp_prompt_profile, spp_prompt_fixed_persona
+from prompts.logic_grid_puzzle import *
 import json
 
 
@@ -43,10 +43,20 @@ class LogicGridPuzzleTask(Task):
             input_prompt = cot_prompt.format(input=input_str)
         elif method == "spp":
             input_prompt = spp_prompt.format(input=input_str)
+        elif method == "spp_less_demo":
+            input_prompt = spp_prompt_less_demo.format(input=input_str)
         elif method == "spp_fixed_persona":
             input_prompt = spp_prompt_fixed_persona.format(input=input_str)
         elif method == "spp_profile":
             input_prompt = spp_prompt_profile.format(input=input_str)
+        elif method == "self_refine":
+            phase = kwargs["phase"]
+            if phase == "init":
+                input_prompt = standard_prompt.format(input=input_str)
+            elif phase == "feedback":
+                input_prompt = self_refine_feedback_prompt.format(question_answer=kwargs["question_answer"])
+            elif phase == "refine":
+                input_prompt = self_refine_refinement_prompt.format(question_answer=kwargs["question_answer"], feedback=kwargs["feedback"])
         else:
             raise NotImplementedError(f"method {method} not implemented")
         
@@ -59,16 +69,29 @@ class LogicGridPuzzleTask(Task):
         targets = [target]
         if target in target_aliases:
             targets.append(target_aliases[target])
-        # print(targets)
+        
+        # get all other candidates
+        not_targets = []
+        for i in range(1, 11):
+            if str(i) not in targets:
+                not_targets.append(str(i))
+                not_targets.append(target_aliases[str(i)])
+        # print("targets", targets)
+        # print("negatives", not_targets)
         info = {'correct': False}
         for target in targets:
-            if target.lower().strip() in output.lower().strip():
+            if target.lower().strip() in output.lower().strip(): # if the target is in the output
                 info['correct'] = True
+                # and if all the other targets are not in the output
+                for not_target in not_targets:
+                    if not_target.lower().strip() in output.lower().strip():
+                        info['correct'] = False
+                        break
                 break
         return info
 
     @staticmethod
-    def prompt_unwrap(response: str, method: str):
+    def prompt_unwrap(response: str, method: str, **kwargs):
         '''
             response: raw genration from the model
             return:
@@ -76,7 +99,7 @@ class LogicGridPuzzleTask(Task):
                 - bool: whether the story is successfully parsed from the raw genration
         '''
         # take only the first few characters (enough for successfully parsed output) -> aviod unparsed result to have high accuracy when test output
-        if method in ["standard","cot"]:
+        if method in ["standard", "cot"]:
             if "Answer:" in response:
                 return response.split("Answer:")[1].strip(), True
             elif "answer:" in response:
@@ -84,7 +107,7 @@ class LogicGridPuzzleTask(Task):
             else:
                 return response, False
         
-        elif method in ["spp", "spp_profile", "spp_fixed_persona"]:
+        elif method in ["spp", "spp_profile", "spp_fixed_persona", "spp_less_demo"]:
             if "Final answer:" in response:
                 return response.split("Final answer:")[1].strip(), True
             elif "final answer:" in response:
@@ -92,5 +115,16 @@ class LogicGridPuzzleTask(Task):
             else:
                 return response, False
         
+        elif method == "self_refine":
+            phase = kwargs["phase"]
+            if phase == "feedback":
+                return response, True
+            else:
+                if "Answer:" in response:
+                    return response.split("Answer:")[1].strip(), True
+                elif "answer:" in response:
+                    return response.split("answer:")[1].strip(), True
+                else:
+                    return response, False
         else:
             raise NotImplementedError(f"method {method} not implemented")

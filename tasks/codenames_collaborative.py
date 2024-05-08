@@ -1,18 +1,7 @@
 import os
 import re
 from tasks.base import Task, DATA_PATH
-from prompts.codenames_collaborative import (
-    standard_prompt_spymaster,
-    cot_prompt_spymaster,
-    spp_prompt_spymaster,
-    spp_prompt_spymaster_fixed_persona,
-    spp_prompt_spymaster_profile,
-    standard_prompt_guesser,
-    cot_prompt_guesser,
-    spp_prompt_guesser,
-    spp_prompt_guesser_fixed_persona,
-    spp_prompt_guesser_profile
-)
+from prompts.codenames_collaborative import *
 import json
 
 class CodenamesCollaborativeTask(Task):
@@ -52,10 +41,20 @@ class CodenamesCollaborativeTask(Task):
                 input_prompt = cot_prompt_spymaster.format(n = n, target_words = target_words_str, word_list = word_list_str)
             elif method == "spp":
                 input_prompt = spp_prompt_spymaster.format(n = n, target_words = target_words_str, word_list = word_list_str)
+            elif method == "spp_less_demo":
+                input_prompt = spp_prompt_spymaster_less_demo.format(n = n, target_words = target_words_str, word_list = word_list_str)
             elif method == "spp_fixed_persona":
                 input_prompt = spp_prompt_spymaster_fixed_persona.format(n = n, target_words = target_words_str, word_list = word_list_str)
             elif method == "spp_profile":
                 input_prompt = spp_prompt_spymaster_profile.format(n = n, target_words = target_words_str, word_list = word_list_str)
+            elif method == "self_refine":
+                phase = kwargs["phase"]
+                if phase == "init":
+                    input_prompt = standard_prompt_spymaster.format(n = n, target_words = target_words_str, word_list = word_list_str)
+                elif phase == "feedback":
+                    input_prompt = self_refine_feedback_prompt.format(question_answer=kwargs["question_answer"])
+                elif phase == "refine":
+                    input_prompt = self_refine_refinement_prompt.format(question_answer=kwargs["question_answer"], feedback=kwargs["feedback"])
             else:
                 raise NotImplementedError(f"method {method} not implemented for spymaster role")
         elif role == 'guesser':
@@ -65,10 +64,20 @@ class CodenamesCollaborativeTask(Task):
                 input_prompt = cot_prompt_guesser.format(n = n, hint_word = hint_word, word_list = word_list_str)
             elif method == "spp":
                 input_prompt = spp_prompt_guesser.format(n = n, hint_word = hint_word, word_list = word_list_str)
+            elif method == "spp_less_demo":
+                input_prompt = spp_prompt_guesser_less_demo.format(n = n, hint_word = hint_word, word_list = word_list_str)
             elif method == "spp_fixed_persona":
                 input_prompt = spp_prompt_guesser_fixed_persona.format(n = n, hint_word = hint_word, word_list = word_list_str)
             elif method == "spp_profile":
                 input_prompt = spp_prompt_guesser_profile.format(n = n, hint_word = hint_word, word_list = word_list_str)
+            elif method == "self_refine":
+                phase = kwargs["phase"]
+                if phase == "init":
+                    input_prompt = standard_prompt_guesser.format(n = n, hint_word = hint_word, word_list = word_list_str)
+                elif phase == "feedback":
+                    input_prompt = self_refine_feedback_prompt.format(question_answer=kwargs["question_answer"])
+                elif phase == "refine":
+                    input_prompt = self_refine_refinement_prompt.format(question_answer=kwargs["question_answer"], feedback=kwargs["feedback"])
             else:
                 raise NotImplementedError(f"method {method} not implemented for guesser role")
         else:
@@ -95,7 +104,7 @@ class CodenamesCollaborativeTask(Task):
         return info
 
     @staticmethod
-    def prompt_unwrap(response: str, method: str):
+    def prompt_unwrap(response: str, method: str, **kwargs):
         '''
             response: raw genration from the model
             return:
@@ -111,13 +120,23 @@ class CodenamesCollaborativeTask(Task):
             else:
                 return response, True
         
-        elif method in ["spp", "spp_profile", "spp_fixed_persona"]:
+        elif method in ["spp", "spp_profile", "spp_fixed_persona", "spp_less_demo"]:
             if "Final answer:" in response:
                 return response.split("Final answer:")[1].strip(), True
             elif "final answer:" in response:
                 return response.split("final answer:")[1].strip(), True
             else:
                 return response, False
-        
+        elif method == "self_refine":
+            phase = kwargs["phase"]
+            if phase == "feedback":
+                return response, True
+            else:
+                if "Answer:" in response:
+                    return response.split("Answer:")[1].strip(), True
+                elif "answer:" in response:
+                    return response.split("answer:")[1].strip(), True
+                else:
+                    return response, True
         else:
             raise NotImplementedError(f"method {method} not implemented")

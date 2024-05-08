@@ -2,6 +2,10 @@
 
 ![Illustration of Solo Performance Prompting](asset/teaser_figure_horizontal_png.png) 
 
+## 🔥 News
+- `5/8/2024`: Update GPT-3.5 and LLama2 inference code and results for Figure 6, which shows the emergent nature of cognitive synergy.
+- `3/15/2024`: This paper has been accepted as a main conference paper at NAACL2024!
+
 ## Setup
 - Install dependencies
     ```
@@ -22,7 +26,7 @@ All prompts can be found in the `prompts/` folder.
 All datasets can be found in the `data/` folder.
 
 ## Paper Experiment Results
-Experimental results in the paper for each task can be found in the `logs/` folder. Each task has two subdirs `w_sys_mes` and `wo_sys_mes` indicating the two inference settings: with and without the system message: "You are an AI assistant that helps people find information.".
+Experimental results in the paper for each task can be found in the `logs/` folder. `gpt4_w_sys_mes` and `gpt4_wo_sys_mes` contains results corresponding to Table 2 in our paper. We also include gpt-3.5 and llama2-13b results corresponding to the results in Figure 6, where the hyperparameters, such as whether or not adding system message, follows the best performing choices in the gpt4 experiments.
 
 ### Log file formats
 

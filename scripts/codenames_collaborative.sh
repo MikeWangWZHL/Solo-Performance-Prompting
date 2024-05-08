@@ -1,4 +1,5 @@
-MODEL="gpt4-32k" # your engine name
+MODEL="gpt4-32k" # your engine name: gpt4-32k, gpt35-turbo, or meta-llama/Llama-2-13b-chat-hf
+MODEL_TYPE="gpt" # 'gpt' or 'llama2'
 
 DATA_FILE="codenames_50.jsonl"
 
@@ -13,6 +14,7 @@ SYSTEM_MESSAGE="You are an AI assistant that helps people find information." # o
 
 python run.py \
     --model ${MODEL} \
+    --model_type ${MODEL_TYPE} \
     --method ${METHOD} \
     --task codenames_collaborative \
     --task_data_file ${DATA_FILE} \
